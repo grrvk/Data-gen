@@ -1,4 +1,4 @@
-## Converter 
+## Generator 
 
 Module to generate data for the dataset
 
