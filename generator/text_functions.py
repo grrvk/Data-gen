@@ -228,7 +228,7 @@ def wrap_into_lines(text, lines):
     return segments
 
 
-def prepare_data_for_json(json_file_path, block, index, table=False):
+def prepare_data_for_json(brochure, block, index, json_file_path: str = None, dict_output: bool=False, table=False):
     """
         This function transforms block data into bounding box object
     """
@@ -236,7 +236,24 @@ def prepare_data_for_json(json_file_path, block, index, table=False):
     x1, y1 = block.x, block.y
     x2, y2 = block.x + block.width, block.y + block.height
     b_box = br.BoundingBox(x1=x1, y1=y1, x2=x2, y2=y2)
-    append_to_json(json_file_path, b_box, index, table)
+    if dict_output:
+        append_bbox_cords(brochure, b_box)
+    else:
+        append_to_json(json_file_path, b_box, index, table)
+
+def append_bbox_cords(brochure, b_box):
+    """
+        This function is used to append text line coordinates to brochure t_cords field
+    """
+
+    new_entry = {
+        "x1": b_box.x1,
+        "y1": b_box.y1,
+        "x2": b_box.x2,
+        "y2": b_box.y2
+    }
+
+    brochure.add_coords(new_entry)
 
 
 def append_to_json(file_path, b_box, index, table=False):

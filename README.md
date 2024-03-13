@@ -7,16 +7,14 @@ Run with generate function in generator main.py folder.
 
 ```python
 from generator.main import generate
+from generator.settings import setGenSettings
 
-
-generate(amount=5,
-         samples_path='SAMPLES',
-         dataset_name='DATASET_NAME')
+settings = setGenSettings(samples_path='SAMPLES_PATH')
+generate(amount=5, settings=settings)
 ```
 
-### Parameters:
+### Settings parameters:
 
-* amount - how many photos to generate
 * samples_path - path to samples folder with data to fill generated photo
 * dataset_path [Optional] - where to create dataset
     * if unset - generated in the same place where the generator is
@@ -26,6 +24,18 @@ generate(amount=5,
     * parameter is not used when generating to already existing dataset
 * upload [Optional] - default False, set ***True*** to generate data to already present dataset 
     * If set True - *dataset_path* must be passed
+
+### Dict_output parameter
+
+setSettings has extra parameter dict_output set False as default. 
+
+If set True, as a result of layout_function generate_brochure is not a saved image and table_{index}.txt file,
+but a dictionary:   
+```
+{"image": image as numpy array, "boxes": list of dicts of bboxes cords, "image_name": f'{index}.jpg'}
+```
+
+In this case dataset_path, dataset_name and upload parameters of setSettings are not considered existing.
 
 ### Samples
 

@@ -59,13 +59,13 @@ def check_files_size(path, name):
 
 
 class Settings:
-    DATASET_PATH: str
-    SAMPLES_PATH: str
+    DATASET_PATH: str = None
+    SAMPLES_PATH: str = None
     NAMING_INDEX: int
-    UPLOAD: str
+    UPLOAD: bool
 
-    DATASET_IMAGES_PATH: str
-    DATASET_TABLE_LOCATIONS_PATH: str
+    DATASET_IMAGES_PATH: str = None
+    DATASET_TABLE_LOCATIONS_PATH: str = None
 
     TEMPORARY_IMAGE: str
     TEMPORARY_TABLE: str
@@ -74,6 +74,7 @@ class Settings:
                               'sample_table_fonts', 'sample_text']
     NEC_DATASET_DIRS: list = ['images', 'table_locations']
     NEC_DATASET_FILES: list = ['content_sentences', 'content_words']
+    DICT_OUTPUT : bool = False
 
     def __repr__(self):
         return (f"Config: dataset_path = {self.DATASET_PATH}, \n"
@@ -83,9 +84,6 @@ class Settings:
 
     def __init__(self, **kwargs):
         self.UPLOAD = kwargs.get('upload')
-        dataset_path = kwargs.get('dataset_path')
-        dataset_name = kwargs.get('dataset_name')
-
         samples_path = kwargs.get('samples_path')
         if samples_path is None or not os.path.exists(samples_path):
             raise Exception('Path to samples does not exist')
@@ -94,6 +92,15 @@ class Settings:
 
         self.TEMPORARY_IMAGE = os.path.join(self.SAMPLES_PATH, 'temp_img.jpg')
         self.TEMPORARY_TABLE = os.path.join(self.SAMPLES_PATH, 'temp_img.jpg')
+
+        if kwargs.get("dict_output"):
+            self.DICT_OUTPUT = True
+        else:
+            self.folder_output(**kwargs)
+
+    def folder_output(self, **kwargs):
+        dataset_path = kwargs.get('dataset_path')
+        dataset_name = kwargs.get('dataset_name')
 
         if self.UPLOAD:
             self.load(dataset_path)
@@ -137,3 +144,13 @@ class Settings:
 
     def clear_temp_samples(self):
         remove_temporary_picture(self.SAMPLES_PATH, 'temp_img')
+
+
+def setGenSettings(samples_path: str, dataset_path: str = None, dataset_name: str = None,
+                upload: bool = False, dict_output: bool = False):
+
+    return Settings(samples_path=samples_path,
+                    dataset_path=dataset_path,
+                    dataset_name=dataset_name,
+                    upload=upload,
+                    dict_output=dict_output)

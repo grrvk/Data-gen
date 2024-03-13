@@ -22,6 +22,14 @@ class Brochure:
         self.image = image
         self.draw = draw
 
+        self.t_cords = None
+
+    def set_table_coords_arr(self):
+        self.t_cords = []
+
+    def add_coords(self, coords: dict):
+        self.t_cords.append(coords)
+
 
 class BrochureBlock:
     """

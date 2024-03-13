@@ -20,6 +20,7 @@ def generate_brochure(index, conf):
 
     text = tf.get_entire_text(index, conf.SAMPLES_PATH)
     brochure = generate_brochure_params(conf.SAMPLES_PATH)
+    brochure.set_table_coords_arr()
 
     if random.choice([True, False]):
 
@@ -89,7 +90,10 @@ def generate_brochure(index, conf):
                 text_pos += 2
                 put_text_in_block(text, brochure, bl, True)
 
-    brochure.image.save(f"{os.path.join(conf.DATASET_PATH, 'images')}/{index}.jpg")
+    if conf.DICT_OUTPUT:
+        return {"image": np.array(brochure.image), "boxes": brochure.t_cords, "image_name": f'{index}.jpg'}
+    else:
+        brochure.image.save(f"{os.path.join(conf.DATASET_PATH, 'images')}/{index}.jpg")
 
 
 def generate_brochure_layout(width, height):
@@ -143,7 +147,12 @@ def determine_type_of_image(brochure, block, index, conf, def_table=False):
     image_choice = np.random.choice(np.arange(1, 4), p=[0.7, 0.2, 0.1])
 
     if def_table or image_choice == 1:
-        tf.prepare_data_for_json(f"{os.path.join(conf.DATASET_PATH, 'table_locations')}/tables_{index}", block, index)
+        if conf.DICT_OUTPUT:
+            tf.prepare_data_for_json(brochure, block, index, dict_output=True)
+        else:
+            tf.prepare_data_for_json(brochure, block, index,
+                                     f"{os.path.join(conf.DATASET_PATH, 'table_locations')}/tables_{index}",
+                                     dict_output=False)
         t.generate_table(brochure, block, conf)
         insert_path = conf.TEMPORARY_TABLE
 
