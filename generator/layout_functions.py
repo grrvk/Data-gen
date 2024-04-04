@@ -9,7 +9,8 @@ import os
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np
 from generator import brochure as br, graphs as g, tables as t, text_functions as tf
-import time
+from datetime import datetime
+
 
 # -*- coding: utf-8 -*-
 
@@ -86,9 +87,10 @@ def generate_brochure(index, conf):
                 put_text_in_block(text, brochure, bl, True)
 
     if conf.DICT_OUTPUT:
-        return {"image": np.array(brochure.image), "boxes": brochure.t_cords, "image_name": f'{index}.jpg'}
+        return {"image": np.array(brochure.image), "boxes": brochure.t_cords,
+                "image_name": f'{str(datetime.now())}.jpg'}
     else:
-        brochure.image.save(f"{os.path.join(conf.DATASET_PATH, 'images')}/{index}.jpg")
+        brochure.image.save(f"{os.path.join(conf.DATASET_PATH, 'images')}/{str(datetime.now())}.jpg")
 
 
 def generate_brochure_layout(width, height):
@@ -157,7 +159,7 @@ def determine_type_of_image(brochure, block, index, conf, def_table=False):
 
     else:
         os.path.join(conf.SAMPLES_PATH, 'sample_insert_images')
-        insert_path = tf.get_random_file_path(os.path.join(conf.SAMPLES_PATH, 'sample_insert_images'),'*.jpg')
+        insert_path = tf.get_random_file_path(os.path.join(conf.SAMPLES_PATH, 'sample_insert_images'), '*.jpg')
 
     insert_image(brochure, insert_path, block)
 
